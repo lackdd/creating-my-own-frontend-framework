@@ -2,10 +2,10 @@ import {mountDom} from '/framework/packages/runtime/src/mount-dom.js';
 import {h} from '/framework/packages/runtime/src/h.js'
 
 function main() {
-	console.log('This will soon be a frontend framework!')
+	console.log('Starting app!')
 
-	const vdom = h('section', {} [
-		h('h1', {}, ['My Blog']),
+	const vdom = h('section', {}, [
+		h('h1', {}, ['My blog']),
 			h('p', {}, ['Welcome to my blog!'])
 		])
 
@@ -13,7 +13,6 @@ function main() {
 }
 
 main();
-
 
 
 // import {h, hFragment} from 'dotjs/src/h';
