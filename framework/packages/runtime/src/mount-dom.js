@@ -3,18 +3,22 @@ import { setAttributes } from './attributes.js'
 import { addEventListeners } from './events.js'
 
 export function mountDom(vdom, parentEl) {
+	console.log("Mounting DOM!");
 	switch (vdom.type) {
 		case DOM_TYPES.TEXT: {
+			console.log(`Mounting DOM of type: ${vdom.type}`);
 			createTextNode(vdom, parentEl)
 			break
 		}
 
 		case DOM_TYPES.ELEMENT: {
+			console.log(`Mounting DOM of type: ${vdom.type}`);
 			createElementNode(vdom, parentEl)
 			break
 		}
 
 		case DOM_TYPES.FRAGMENT: {
+			console.log(`Mounting DOM of type: ${vdom.type}`);
 			createFragmentNode(vdom, parentEl)
 			break
 		}
@@ -56,7 +60,7 @@ function addProps(el, props, vdom) {
 }
 
 // create fragment node
-function createFragmentNodes(vdom, parentEl) {
+function createFragmentNode(vdom, parentEl) {
 	const { children } = vdom;
 	vdom.el = parentEl;
 
