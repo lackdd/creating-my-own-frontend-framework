@@ -1,0 +1,24 @@
+{
+  "name": "dotjs",
+  "version": "1.0.0",
+  "description": "A project to learn how to write a frontend framework",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "framework/packages/runtime"
+  ],
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve:example": "npx http-server . -o ./example"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitea.kood.tech/mariussoon/dot-js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
