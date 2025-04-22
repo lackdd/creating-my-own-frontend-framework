@@ -17,8 +17,7 @@ export function setAttributes(el, attrs) {
 	}
 }
 
-// TODO: implement setClass
-function setClass(el, className) {
+export function setClass(el, className) {
 	el.className = '';
 
 	if (typeof className === 'string') {
@@ -30,7 +29,6 @@ function setClass(el, className) {
 	}
 }
 
-// TODO: implement setStyle
 export function setStyle(el, name, value) {
 	el.style[name] = value;
 }
@@ -39,7 +37,7 @@ export function removeStyle(el, name) {
 	el.style[name] = null;
 }
 
-// TODO: implement setAttribute
+
 export function setAttribute(el, name, value) {
 	if (value == null) {
 		removeAttribute(el, name);
