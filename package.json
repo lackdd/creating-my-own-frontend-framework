@@ -11,7 +11,8 @@
     "example": "example"
   },
   "scripts": {
-    "serve:example": "npx http-server . -p 3000 -c-1 -o /example/example.html"
+    "serve:example-windows": "npx http-server . -p 3000 -c-1 -o /example/example.html",
+    "serve:example-linux": "npx http-server . -p 3000 -c-1 & open -a \"Google Chrome\" http://localhost:3000/example/example.html"
   },
   "repository": {
     "type": "git",
