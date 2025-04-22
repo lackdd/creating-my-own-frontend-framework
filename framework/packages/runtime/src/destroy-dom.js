@@ -2,7 +2,7 @@ import { removeEventListeners } from './events.js'
 import {DOM_TYPES} from './h.js'
 
 export function destroyDom(vdom) {
-    console.log("Destroying dom");
+    // console.log("Destroying dom");
 
     const {type} = vdom
 
