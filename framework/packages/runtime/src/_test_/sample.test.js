@@ -1,10 +1,5 @@
 import { expect, test } from 'vitest';
-import {h} from '../h';
 import {objectsDiff} from '../objects';
-
-test('sample test', () => {
-	expect(1).toBe(1)
-})
 
 test('objectsDiff test: default', () => {
 
