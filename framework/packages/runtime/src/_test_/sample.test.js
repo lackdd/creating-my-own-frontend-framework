@@ -1,32 +1,32 @@
-import { expect, test } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {objectsDiff} from '../objects';
-
-test('objectsDiff test: default', () => {
-
-	const oldObj = {
-		type: 'number',
-		disabled: false,
-		max: 999,
-	};
-
-	const newObj = {
-		type: 'number',
-		disabled: true,
-		min: 0,
-	};
-
-	expect(
-		objectsDiff(oldObj, newObj))
-		.toStrictEqual(
-			{
-				added: ['min',],
-				removed: ['max',],
-				updated: ['disabled',],
-			})
-})
 
 
 describe('ObjectsDiff', () => {
+	it('default test', () => {
+
+		const oldObj = {
+			type: 'number',
+			disabled: false,
+			max: 999,
+		};
+
+		const newObj = {
+			type: 'number',
+			disabled: true,
+			min: 0,
+		};
+
+		expect(
+			objectsDiff(oldObj, newObj))
+			.toStrictEqual(
+				{
+					added: ['min',],
+					removed: ['max',],
+					updated: ['disabled',],
+				})
+	})
+
 	it('should have no diff', () => {
 		const oldObj = {foo: 'bar',};
 		const newObj = {foo: 'bar',};
