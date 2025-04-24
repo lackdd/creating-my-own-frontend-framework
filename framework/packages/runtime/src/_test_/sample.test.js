@@ -25,44 +25,52 @@ test('objectsDiff test: default', () => {
 			})
 })
 
-test('objectsDiff test: no diff', () => {
-	const oldObj = {foo: 'bar',};
-	const newObj = {foo: 'bar',};
-	const { added, removed, updated } = objectsDiff(oldObj, newObj);
 
-	expect(added).toEqual([]);
-	expect(removed).toEqual([]);
-	expect(updated).toEqual([]);
-})
+describe('ObjectsDiff', () => {
+	it('should have no diff', () => {
+		const oldObj = {foo: 'bar',};
+		const newObj = {foo: 'bar',};
 
-test('objectsDiff test: add key', () => {
-	const oldObj = {}
-	const newObj = { foo: 'bar' }
-	const { added, removed, updated } = objectsDiff(oldObj, newObj);
+		const { added, removed, updated } = objectsDiff(oldObj, newObj);
 
-	expect(added).toEqual(['foo'])
-	expect(removed).toEqual([])
-	expect(updated).toEqual([])
-})
+		expect(added).toEqual([]);
+		expect(removed).toEqual([]);
+		expect(updated).toEqual([]);
+	})
 
-test('objectsDiff test: remove key', () => {
-	const oldObj = {foo: 'bar',};
-	const newObj = {};
-	const { added, removed, updated } = objectsDiff(oldObj, newObj);
+	it('should add key', () => {
+		const oldObj = {};
+		const newObj = { foo: 'bar' };
 
-	expect(added).toEqual([]);
-	expect(removed).toEqual(['foo']);
-	expect(updated).toEqual([]);
-})
+		const { added, removed, updated } = objectsDiff(oldObj, newObj);
 
-test('objectsDiff test: update value', () => {
-	const arr = [1, 2, 3]
-	const oldObj = {foo: 'bar', arr};
-	const newObj = {foo: 'rab', arr};
-	const { added, removed, updated } = objectsDiff(oldObj, newObj);
+		expect(added).toEqual(['foo']);
+		expect(removed).toEqual([]);
+		expect(updated).toEqual([]);
+	})
 
-	expect(added).toEqual([]);
-	expect(removed).toEqual([]);
-	expect(updated).toEqual(['foo']);
+	it('should remove key', () => {
+		const oldObj = {foo: 'bar',};
+		const newObj = {};
+
+		const { added, removed, updated } = objectsDiff(oldObj, newObj);
+
+		expect(added).toEqual([]);
+		expect(removed).toEqual(['foo']);
+		expect(updated).toEqual([]);
+	})
+
+	it('should update value', () => {
+		const arr = [1, 2, 3]
+		const oldObj = {foo: 'bar', arr};
+		const newObj = {foo: 'rab', arr};
+
+		const { added, removed, updated } = objectsDiff(oldObj, newObj);
+
+		expect(added).toEqual([]);
+		expect(removed).toEqual([]);
+		expect(updated).toEqual(['foo']);
+	})
+
 })
 
