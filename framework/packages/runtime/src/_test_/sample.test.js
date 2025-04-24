@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {objectsDiff} from '../objects';
-import {applyArrayDiffSequence, arraysDiffSequence} from '../utils/arrays';
+import { applyArraysDiffSequence, arraysDiffSequence} from '../utils/arrays';
 
 
 describe('ObjectsDiff', () => {
@@ -82,7 +82,7 @@ describe('applyArrayDiffSequence', () => {
 
 		const sequence = arraysDiffSequence(oldArray, newArray);
 
-		const newnewArray = applyArrayDiffSequence(oldArray, sequence);
+		const newnewArray = applyArraysDiffSequence(oldArray, sequence);
 
 		expect(newArray).toEqual(newnewArray);
 	});
