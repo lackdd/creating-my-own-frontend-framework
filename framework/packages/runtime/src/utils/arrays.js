@@ -180,3 +180,74 @@ export function arraysDiffSequence(
 
 	return sequence
 }
+
+export function applyArrayDiffSequence(array, sequence) {
+	/*const equalsFn = (a, b) => a === b;*/
+
+	/*const objectArray = new ArrayWithOriginalIndices(array, equalsFn);*/
+
+	/*console.log("Array:", array);
+	console.log("objectArray:", objectArray);*/
+
+	console.log("Array before", array);
+
+
+
+	sequence.forEach(operation => {
+		switch (operation.op) {
+			case "add":
+				console.log("case add");
+				array.splice(operation.index, 0, operation.item);
+				console.log("array after add:", array);
+				break;
+			case "remove":
+				console.log("case remove");
+				array.splice(operation.index, 1);
+				console.log("array after remove:", array);
+				break;
+			case "move":
+				console.log("case move");
+				const [_item] = array.splice(operation.from, 1)
+				array.splice(operation.index, 0, _item)
+				console.log("array after move:", array);
+				break;
+			default: // noop
+				console.log("case noop");
+				console.log("array after noop:", array);
+		}
+	})
+
+	// const newArray = array.map(item => {
+	// 	console.log("operation:", operation );
+	// 	switch (operation.op) {
+	// 		case "add":
+	// 			// objectArray.addItem(operation.item, operation.index);
+	// 			console.log("case add");
+	// 			array.splice(operation.index, 0, operation.index);
+	// 			break;
+	// 		case "remove":
+	// 			// objectArray.removeItem(operation.index);
+	// 			console.log("case remove");
+	// 			array.splice(operation.index, 1);
+	// 			break;
+	// 		case "move":
+	// 			// objectArray.moveItem(operation.item, operation.index);
+	// 			console.log("case move");
+	// 			const [_item] = array.splice(operation.originalIndex, 1)
+	// 			array.splice(operation.originalIndex, 0, _item)
+	// 			break;
+	// 		// case "noop":
+	// 		// 	// objectArray.noopItem(operation.index);
+	// 		//
+	// 		// 	break;
+	// 		default: // noop
+	// 			console.log("case noop");
+	// 	}
+	// })
+
+	console.log("Array after", array);
+
+	return array;
+}
+
+
