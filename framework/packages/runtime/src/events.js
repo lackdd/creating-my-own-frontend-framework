@@ -1,6 +1,12 @@
 export function addEventListener(eventName, handler, el) {
-	el.addEventListener(eventName, handler);
-	return handler;
+
+	function boundHandler(event) {
+
+		handler(event)
+	}
+
+	el.addEventListener(eventName, boundHandler);
+	return boundHandler;
 }
 
 export function addEventListeners(listeners = {}, el) {
