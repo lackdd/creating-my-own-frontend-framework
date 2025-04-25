@@ -1,13 +1,12 @@
 import { destroyDom } from './destroy-dom.js'
 import { mountDom } from './mount-dom.js'
 import { areNodesEqual } from './nodes-equal.js'
-import {DOM_TYPES, extractChildren} from './h';
-import {stripNewlines} from 'jsdom/lib/jsdom/living/helpers/strings';
-import {objectsDiff} from './objects';
-import {removeAttribute, removeStyle, setAttribute, setStyle} from './attributes';
-import {ARRAY_DIFF_OP, arraysDiff, arraysDiffSequence} from './utils/arrays';
-import {isNotBlankOrEmptyString} from './utils/strings';
-import {addEventListener} from './events';
+import {DOM_TYPES, extractChildren} from './h.js';
+import {objectsDiff} from './objects.js';
+import {removeAttribute, removeStyle, setAttribute, setStyle} from './attributes.js';
+import {ARRAY_DIFF_OP, arraysDiff, arraysDiffSequence} from './utils/arrays.js';
+import {isNotBlankOrEmptyString} from './utils/strings.js';
+import {addEventListener} from './events.js';
 
 export function patchDom(oldVdom, newVdom, parentEl) {
 	if (!areNodesEqual(oldVdom, newVdom)) {
