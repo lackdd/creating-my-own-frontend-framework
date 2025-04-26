@@ -8,7 +8,7 @@ import {ARRAY_DIFF_OP, arraysDiff, arraysDiffSequence} from './utils/arrays.js';
 import {isNotBlankOrEmptyString} from './utils/strings.js';
 import {addEventListener} from './events.js';
 
-export function patchDom(oldVdom, newVdom, parentEl) {
+export function patchDom(oldVdom, newVdom, parentEl, hostComponent = null) {
 	if (!areNodesEqual(oldVdom, newVdom)) {
 		const index = findIndexInParent(parentEl, oldVdom.el);
 		destroyDom(oldVdom);
@@ -30,7 +30,7 @@ export function patchDom(oldVdom, newVdom, parentEl) {
 		}
 	}
 
-	patchChildren(oldVdom, newVdom);
+	patchChildren(oldVdom, newVdom, hostComponent);
 
 	return newVdom
 
@@ -141,7 +141,7 @@ function patchEvents(el, oldListeners = {}, oldEvents = {}, newEvents = {}) {
 	return addedListeners
 }
 
-function patchChildren(oldVdom, newVdom) {
+function patchChildren(oldVdom, newVdom, hostComponent) {
 	const oldChildren = extractChildren(oldVdom);
 	const newChildren = extractChildren(newVdom);
 	const parentEl = oldVdom.el;
@@ -154,6 +154,7 @@ function patchChildren(oldVdom, newVdom) {
 
 	for (const operation of diffSeq) {
 		const { originalIndex, index, item } = operation;
+		const offset = hostComponent?.offset ?? 0
 
 		switch (operation.op) {
 			case ARRAY_DIFF_OP.ADD: {
@@ -171,12 +172,12 @@ function patchChildren(oldVdom, newVdom) {
 				const elAtTargetIndex = parentEl.childNodes[index];
 
 				parentEl.insertBefore(el, elAtTargetIndex);
-				patchDom(oldChild, newChild, parentEl);
+				patchDom(oldChild, newChild, parentEl, hostComponent);
 
 				break
 			}
 			case ARRAY_DIFF_OP.NOOP: {
-				patchDom(oldChildren[originalIndex], newChildren[index], parentEl);
+				patchDom(oldChildren[originalIndex], newChildren[index], parentEl, hostComponent);
 				break
 			}
 		}
