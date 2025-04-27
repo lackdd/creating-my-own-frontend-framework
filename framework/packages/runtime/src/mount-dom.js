@@ -2,7 +2,7 @@ import { DOM_TYPES} from './h.js';
 import { setAttributes } from './attributes.js'
 import { addEventListeners } from './events.js'
 
-export function mountDom(vdom, parentEl, index) {
+export function mountDom(vdom, parentEl, index, hostComponent = null) {
 	// console.log("Mounting DOM!");
 	switch (vdom.type) {
 		case DOM_TYPES.TEXT: {
@@ -13,13 +13,13 @@ export function mountDom(vdom, parentEl, index) {
 
 		case DOM_TYPES.ELEMENT: {
 			// console.log(`Mounting DOM of type: ${vdom.type}`);
-			createElementNode(vdom, parentEl, index)
+			createElementNode(vdom, parentEl, index, hostComponent)
 			break
 		}
 
 		case DOM_TYPES.FRAGMENT: {
 			// console.log(`Mounting DOM of type: ${vdom.type}`);
-			createFragmentNode(vdom, parentEl, index)
+			createFragmentNode(vdom, parentEl, index, hostComponent)
 			break
 		}
 
@@ -40,34 +40,34 @@ function createTextNode(vdom, parentEl, index) {
 }
 
 // create element node
-function createElementNode(vdom, parentEl, index) {
+function createElementNode(vdom, parentEl, index, hostComponent) {
 	const { tag, props, children } = vdom;
 
 	const element = document.createElement(tag);
-	addProps(element, props, vdom);
+	addProps(element, props, vdom, hostComponent);
 	vdom.el = element;
 
 	// create nodes for each child
-	children.forEach((child) => mountDom(child, element));
+	children.forEach((child) => mountDom(child, element, null, hostComponent));
 
 	insert(element, parentEl, index)
 }
 
-function addProps(el, props, vdom) {
+function addProps(el, props, vdom, hostComponent) {
 	const { on: events, ...attrs } = props;
 
-	vdom.listeners = addEventListeners(events, el);
+	vdom.listeners = addEventListeners(events, el, hostComponent);
 	setAttributes(el, attrs);
 }
 
 // create fragment node
-function createFragmentNode(vdom, parentEl, index) {
+function createFragmentNode(vdom, parentEl, index, hostComponent) {
 	const { children } = vdom;
 	vdom.el = parentEl;
 
 	// create nodes for each child
 	children.forEach((child, i) => {
-		mountDom(child, parentEl, index ? index + i : null)})
+		mountDom(child, parentEl, index ? index + i : null, hostComponent)})
 }
 
 function insert(el, parentEl, index) {

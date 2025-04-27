@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {objectsDiff} from '../objects';
+import {objectsDiff} from '../utils/objects';
 import { applyArraysDiffSequence, arraysDiffSequence} from '../utils/arrays';
 
 

@@ -31,6 +31,7 @@ const FlyingButton = defineComponent({
 			['Move'],
 			)
 	},
+
 })
 
 const flyingButtonInstance = new FlyingButton();
