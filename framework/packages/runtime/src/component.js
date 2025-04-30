@@ -2,7 +2,8 @@ import { destroyDom } from './destroy-dom.js'
 import { mountDom } from './mount-dom.js'
 import { patchDom } from './patch-dom.js';
 import {DOM_TYPES, extractChildren} from './h.js';
-import { hasOwnProperty } from './utils/objects.js'
+import { hasOwnProperty } from './utils/objects.js';
+import equal from 'fast-deep-equal';
 
 export function defineComponent({ render, state, ...methods }) {
     class Component {
@@ -20,7 +21,13 @@ export function defineComponent({ render, state, ...methods }) {
                 return []
             }
             if (this.#vdom.type === DOM_TYPES.FRAGMENT) {
-                return extractChildren(this.#vdom).map((child) => child.el)
+                // return extractChildren(this.#vdom).map((child) => child.el)
+                return extractChildren(this.#vdom).flatMap((child) => {
+                    if (child.type === DOM_TYPES.COMPONENT) {
+                        return child.component.elements
+                    }
+                    return [child.el]
+                })
             }
 
             return [this.#vdom.el]
@@ -35,6 +42,17 @@ export function defineComponent({ render, state, ...methods }) {
              return Array.from(this.#hostEl.children).indexOf(this.firstElement)
          }
          return 0
+        }
+
+        updateProps(props) {
+            const newProps = { ...this.props, ...props};
+
+            if (equal(this.props, newProps)) {
+                return
+            }
+
+            this.props = newProps;
+            this.#patch();
         }
 
         updateState(state) {
