@@ -23,6 +23,12 @@ export function mountDom(vdom, parentEl, index, hostComponent = null) {
 			break
 		}
 
+		case DOM_TYPES.COMPONENT: {
+			// console.log(`Mounting DOM of type: ${vdom.type}`);
+			createComponentNode(vdom, parentEl, index, hostComponent)
+			break
+		}
+
 		default: {
 			throw new Error(`Can't mount DOM of type: ${vdom.type}`)
 		}
@@ -70,6 +76,16 @@ function createFragmentNode(vdom, parentEl, index, hostComponent) {
 		mountDom(child, parentEl, index ? index + i : null, hostComponent)})
 }
 
+function createComponentNode(vdom, parentEl, index, hostComponent) {
+	const Component = vdom.tag;
+	const props = vdom.props;
+	const component = new Component(props);
+
+	component.mount(parentEl, index);
+	vdom.component = component;
+	vdom.el = component.firstElement;
+}
+
 function insert(el, parentEl, index) {
 	// append if index is null or undefined
 	if (index == null) {
@@ -84,7 +100,7 @@ function insert(el, parentEl, index) {
 
 	const children = parentEl.childNodes;
 
-	// if index is beyong last child, simply append element
+	// if index is beyond last child, simply append element
 	if (index >= children.length) {
 		parentEl.append(el);
 	} else { // otherwise append element at given index
