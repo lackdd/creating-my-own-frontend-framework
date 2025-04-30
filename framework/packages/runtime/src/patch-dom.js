@@ -8,6 +8,7 @@ import {ARRAY_DIFF_OP, arraysDiff, arraysDiffSequence} from './utils/arrays.js';
 import {isNotBlankOrEmptyString} from './utils/strings.js';
 import {addEventListener} from './events.js';
 
+
 export function patchDom(oldVdom, newVdom, parentEl, hostComponent = null) {
 	if (!areNodesEqual(oldVdom, newVdom)) {
 		const index = findIndexInParent(parentEl, oldVdom.el);
@@ -26,6 +27,10 @@ export function patchDom(oldVdom, newVdom, parentEl, hostComponent = null) {
 		}
 		case DOM_TYPES.ELEMENT: {
 			patchElement(oldVdom, newVdom, hostComponent);
+			break
+		}
+		case DOM_TYPES.COMPONENT: {
+			patchComponent(oldVdom, newVdom);
 			break
 		}
 	}
@@ -78,6 +83,16 @@ function patchElement(oldVdom, newVdom, hostComponent) {
 	patchStyles(el, oldStyle, newStyle);
 
 	newVdom.listeners = patchEvents(el, oldListeners, oldEvents, newEvents, hostComponent);
+}
+
+function patchComponent(oldVdom, newVdom) {
+	const { component } = oldVdom;
+	const { props } = newVdom;
+
+	component.updateProps(props);
+
+	newVdom.component = component;
+	newVdom.el = component.firstElement;
 }
 
 
