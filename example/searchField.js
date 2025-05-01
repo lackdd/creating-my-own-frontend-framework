@@ -1,5 +1,5 @@
-import {defineComponent} from "../framework/packages/runtime/src/component.js";
-import {h} from '../framework/packages/runtime/src/h.js'
+import {defineComponent} from 'dotjs/src/component';
+import {h} from 'dotjs/src/h'
 
 function debounce(fn, timeout = 500) {
 	let timer;
