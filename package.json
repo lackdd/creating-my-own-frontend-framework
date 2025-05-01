@@ -11,8 +11,9 @@
     "example": "example"
   },
   "scripts": {
-    "serve:example-windows": "npx http-server . -p 3000 -c-1 -o /example/example.html",
-    "serve:example-linux": "npx http-server . -p 3000 -c-1 & open -a \"Google Chrome\" http://localhost:3000/example/example.html"
+    "dev": "vite",
+    "serve:example-windows": "npx http-server . -p 3000 -c-1 -o /example/index.html",
+    "serve:example-linux": "npx http-server . -p 3000 -c-1 & open -a \"Google Chrome\" http://localhost:3000/example/index.html"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^6.3.4"
+  }
 }
