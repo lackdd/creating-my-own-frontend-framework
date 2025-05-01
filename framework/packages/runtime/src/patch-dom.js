@@ -7,6 +7,7 @@ import {removeAttribute, removeStyle, setAttribute, setStyle} from './attributes
 import {ARRAY_DIFF_OP, arraysDiff, arraysDiffSequence} from './utils/arrays.js';
 import {isNotBlankOrEmptyString} from './utils/strings.js';
 import {addEventListener} from './events.js';
+import { extractPropsAndEvents } from './utils/props.js'
 
 
 export function patchDom(oldVdom, newVdom, parentEl, hostComponent = null) {
@@ -87,7 +88,7 @@ function patchElement(oldVdom, newVdom, hostComponent) {
 
 function patchComponent(oldVdom, newVdom) {
 	const { component } = oldVdom;
-	const { props } = newVdom;
+	const { props } = extractPropsAndEvents(newVdom)
 
 	component.updateProps(props);
 
