@@ -3,7 +3,8 @@ import { mountDom } from './mount-dom.js'
 import { patchDom } from './patch-dom.js';
 import {DOM_TYPES, extractChildren} from './h.js';
 import { hasOwnProperty } from './utils/objects.js';
-import equal from '../../../../node_modules/fast-deep-equal/index.js';
+// import equal from '../../../../node_modules/fast-deep-equal/index.js';
+import equal from 'fast-deep-equal';
 import { Dispatcher } from './dispatcher.js'
 
 export function defineComponent({ render, state, ...methods }) {
