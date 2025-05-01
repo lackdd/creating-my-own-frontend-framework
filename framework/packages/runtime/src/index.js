@@ -10,3 +10,4 @@ export * from './utils/arrays.js';
 export * from './utils/objects.js';
 export * from './utils/props.js';
 export * from './utils/strings.js';
+export { defineComponent } from './component.js'

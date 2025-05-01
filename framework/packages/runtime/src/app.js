@@ -1,10 +1,42 @@
 import {destroyDom} from './destroy-dom.js'
-import {Dispatcher} from './dispatcher.js'
 import {mountDom} from './mount-dom.js'
-import {patchDom} from './patch-dom.js'
+import { h } from './h'
 
-export function createApp({state, view, reducers = {} }) {
+export function createApp(RootComponent, props = {}) {
     let parentEl = null
+    let isMounted = false
+    let vdom = null
+
+    function reset() {
+        parentEl = null
+        isMounted = false
+        vdom = null
+    }
+
+    return {
+        mount(_parentEl) {
+            if (isMounted) {
+                throw new Error('The application is already mounted')
+            }
+
+            parentEl = _parentEl
+            vdom = h(RootComponent, props)
+            mountDom(vdom, parentEl)
+
+            isMounted = true
+        },
+
+        unmount() {
+            if (!isMounted) {
+                throw new Error('The application is not mounted')
+            }
+
+            destroyDom(vdom)
+            reset()
+        },
+    }
+
+    /*let parentEl = null
     let vdom = null
     let isMounted = false;
 
@@ -54,5 +86,5 @@ export function createApp({state, view, reducers = {} }) {
             subscriptions.forEach((unsubscribe) => unsubscribe())
             isMounted = false;
         },
-    }
+    }*/
 }

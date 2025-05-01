@@ -2,6 +2,7 @@ import {defineComponent} from 'dotjs/src/component';
 import {h} from 'dotjs/src/h'
 
 function debounce(fn, timeout = 500) {
+	console.log("fn:", fn)
 	let timer;
 	return (...args) => {
 		if (!timer) {
@@ -16,21 +17,30 @@ function debounce(fn, timeout = 500) {
 
 const SearchField = defineComponent({
 	render() {
+		// return h(
+		// 	'input', {on: {input: debounce(this.props.fn)}}, ['search']
+		// )
 		return h(
-			'input', {on: {change: debounce(this.fn)}}, ['search']
+			'input', {on: {input: debounce((event) => this.emit('search', event.target.value), 500)}}
 		)
 	}
 })
 
-function fn() {console.log("Typed")}
+const ParentComponent = defineComponent({
+	render() {
+		return h(
+			'div', {}, [
+				h(SearchField, {}, {
+					search: (value) => console.log("search term", value)
+				})]
+		);
+	}
+});
 
-const searchField = new SearchField({fn});
+// const fn = () => {console.log("Typed")}
 
-searchField.mount(document.body);
-
-/*
-1. kontrolli, kas poole sekundi sees on user kirjutanud veel mingi tähe
-2. kui on, siis ära saada event
-3. kui ei ole, siis saada event
-
- */
+const parentComponent = new ParentComponent();
+/*const searchField = new SearchField({}, {
+	search: (value) => console.log("Search term:", value)
+});*/
+parentComponent.mount(document.body);
