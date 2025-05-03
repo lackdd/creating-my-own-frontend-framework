@@ -6,8 +6,11 @@ import { hasOwnProperty } from './utils/objects.js';
 // import equal from '../../../../node_modules/fast-deep-equal/index.js';
 import equal from 'fast-deep-equal';
 import { Dispatcher } from './dispatcher.js'
+import {enqueueJob} from "./scheduler";
 
-export function defineComponent({ render, state, ...methods }) {
+const emptyFn = () => {}
+
+export function defineComponent({ render, state, onMounted = emptyFn, onUnMounted = emptyFn, onPatched = emptyFn, ...methods }) {
     class Component {
         #isMounted = false
         #vdom = null
@@ -22,6 +25,18 @@ export function defineComponent({ render, state, ...methods }) {
             this.state = state ? state(props) : {}
             this.#eventHandlers = eventHandlers
             this.#parentComponent = parentComponent
+        }
+
+        onMounted() {
+            return Promise.resolve(onMounted.call(this))
+        }
+
+        onUnmounted() {
+            return Promise.resolve(onUnMounted.call(this))
+        }
+
+        onPatched() {
+            return Promise.resolve(onPatched.call(this))
         }
 
         get elements() {
@@ -106,6 +121,13 @@ export function defineComponent({ render, state, ...methods }) {
 
             const vdom = this.render()
             this.#vdom = patchDom(this.#vdom, vdom, this.#hostEl, this)
+
+            // Enqueue the onPatched() hook AFTER the patch completes
+            enqueueJob(() => {
+                // Wait for the state to update, then call onPatched()
+                // Promise.resolve().then(() => this.onPatched());
+                this.onPatched();
+            });
         }
 
         #wireEventHandlers() {

@@ -9,7 +9,6 @@ import {isNotBlankOrEmptyString} from './utils/strings.js';
 import {addEventListener} from './events.js';
 import { extractPropsAndEvents } from './utils/props.js'
 
-
 export function patchDom(oldVdom, newVdom, parentEl, hostComponent = null) {
 	if (!areNodesEqual(oldVdom, newVdom)) {
 		const index = findIndexInParent(parentEl, oldVdom.el);
@@ -170,7 +169,7 @@ function patchChildren(oldVdom, newVdom, hostComponent) {
 
 	for (const operation of diffSeq) {
 		const { originalIndex, index, item } = operation;
-		const offset = hostComponent?.offset ?? 0
+		// const offset = hostComponent?.offset ?? 0
 
 		switch (operation.op) {
 			case ARRAY_DIFF_OP.ADD: {

@@ -2,6 +2,7 @@ import { DOM_TYPES} from './h.js';
 import { setAttributes } from './attributes.js'
 import { addEventListeners } from './events.js'
 import { extractPropsAndEvents } from './utils/props.js'
+import { enqueueJob } from './scheduler'
 
 export function mountDom(vdom, parentEl, index, hostComponent = null) {
 	// console.log("Mounting DOM!");
@@ -27,6 +28,7 @@ export function mountDom(vdom, parentEl, index, hostComponent = null) {
 		case DOM_TYPES.COMPONENT: {
 			// console.log(`Mounting DOM of type: ${vdom.type}`);
 			createComponentNode(vdom, parentEl, index, hostComponent)
+			enqueueJob(() => vdom.component.onMounted())
 			break
 		}
 

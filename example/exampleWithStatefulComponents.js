@@ -35,13 +35,46 @@ const TODOapp = defineComponent({
 		])
 	},
 
+	onMounted() {
+		const _todos = localStorage.getItem("todos");
+		console.log("Getting todos from local storage on mount", _todos);
+
+		if (_todos == null) {
+			localStorage.setItem("todos", JSON.stringify(this.state.todos));
+			console.log("Setting todos to local storage on mount", this.state.todos);
+		} else {
+			try {
+				const parsedTodos = JSON.parse(_todos);
+				console.log("Updating todos from local storage", parsedTodos);
+				this.updateState({ todos: parsedTodos });
+			} catch (e) {
+				console.warn("Failed to parse todos from localStorage", e);
+			}
+		}
+	},
+
+	onUnMounted() {
+		localStorage.setItem("todos", JSON.stringify(this.state.todos));
+		console.log("Setting todos to local storage on unmount", this.state.todos);
+	},
+
 	updateCurrentTodo(value) {
 		this.updateState({ currentTodo: value });
+	},
+
+	onPatched() {
+		if (Array.isArray(this.state.todos)) {
+			localStorage.setItem("todos", JSON.stringify(this.state.todos));
+			console.log("Saved todos to local storage after patch", this.state.todos);
+		} else {
+			console.warn("State.todos is not an array. Skipping localStorage save.");
+		}
 	},
 
 	addTodo(text) {
 		const todo = { id: crypto.randomUUID(), text};
 		this.updateState({ todos: [...this.state.todos, todo]})
+		// localStorage.setItem("todos", JSON.stringify(this.state.todos));
 		},
 
 	removeTodo(index) {
@@ -49,12 +82,15 @@ const TODOapp = defineComponent({
 		this.updateState({
 			todos: todos.filter((_, _index) => _index !== index),
 		})
+		// localStorage.setItem("todos", JSON.stringify(this.state.todos));
 	},
 
 	editTodo({ edited, index}) {
 		const newTodos = [...this.state.todos];
-		newTodos[index] = {...newTodos[index], text: edited }
-		this.updateState({ todos: newTodos})
+		newTodos[index] = {...newTodos[index], text: edited };
+		this.updateState({todos: newTodos});
+		console.log("index: ", index)
+		// localStorage.setItem("todos", JSON.stringify(this.state.todos));
 	},
 })
 
@@ -113,6 +149,7 @@ const TodoList = defineComponent({
 
 	render() {
 		const {todos} = this.props
+		console.log("todos in TodoList: ", todos)
 		return h('ul',
 			{style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}},
 			todos.map((todo, index) => h(TodoItem, {
@@ -125,7 +162,7 @@ const TodoList = defineComponent({
 				}
 			}))
 		)
-	}
+	},
 })
 
 const TodoItem = defineComponent({
@@ -138,10 +175,9 @@ const TodoItem = defineComponent({
 	},
 
 	render() {
-		// const isEditing = edit.idx === i;
 		const { original, edited, isEditing } = this.state;
 
-		 return this.state.isEditing ? h('li', {}, [
+		 return isEditing ? h('li', {}, [
 			h('input', {
 				value: edited,
 				on: {
@@ -192,9 +228,7 @@ const TodoItem = defineComponent({
 
 	saveEdit(value) {
 		this.updateState({original: this.state.edited, isEditing: false});
-		console.log("this.state.original: ", this.state.original)
-		console.log("this.state.edited: ", this.state.edited)
-		this.emit('edit', {edited: this.state.edited, i: this.props.index})
+		this.emit('edit', {edited: this.state.edited, index: this.props.index})
 	},
 
 	cancelEdit() {
