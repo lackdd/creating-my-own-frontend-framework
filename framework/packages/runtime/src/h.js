@@ -6,6 +6,7 @@ export const DOM_TYPES = {
 	ELEMENT: 'element',
 	FRAGMENT: 'fragment',
 	COMPONENT: 'component',
+	SLOT: 'slot',
 }
 
 // function to create element virtual nodes
@@ -37,6 +38,20 @@ export function hFragment(vNodes) {
 		type: DOM_TYPES.FRAGMENT,
 		children: mapTextNodes(withoutNulls(vNodes)),
 	}
+}
+
+let hSlotCalled = false
+export function didCreateSlot() {
+	return hSlotCalled
+}
+
+export function resetDidCreateSlot() {
+	hSlotCalled = false
+}
+
+export function hSlot(children = []) {
+	hSlotCalled = true
+	return { type: DOM_TYPES.SLOT, children }
 }
 
 export function extractChildren(vdom) {

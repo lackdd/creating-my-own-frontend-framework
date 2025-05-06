@@ -1,12 +1,13 @@
 import { destroyDom } from './destroy-dom.js'
 import { mountDom } from './mount-dom.js'
 import { patchDom } from './patch-dom.js';
-import {DOM_TYPES, extractChildren} from './h.js';
+import {DOM_TYPES, didCreateSlot, extractChildren, resetDidCreateSlot } from './h.js';
 import { hasOwnProperty } from './utils/objects.js';
 // import equal from '../../../../node_modules/fast-deep-equal/index.js';
 import equal from 'fast-deep-equal';
 import { Dispatcher } from './dispatcher.js'
 import {enqueueJob} from "./scheduler";
+import { fillSlots } from './slots'
 
 const emptyFn = () => {}
 
@@ -19,6 +20,8 @@ export function defineComponent({ render, state, onMounted = emptyFn, onUnMounte
         #parentComponent = null
         #dispatcher = new Dispatcher()
         #subscriptions = []
+        #children = []
+        #appContext = null
 
         constructor(props = {}, eventHandlers = {}, parentComponent = null) {
             this.props = props
@@ -37,6 +40,14 @@ export function defineComponent({ render, state, onMounted = emptyFn, onUnMounte
 
         onPatched() {
             return Promise.resolve(onPatched.call(this))
+        }
+
+        setAppContext(appContext) {
+            this.#appContext = appContext
+        }
+
+        get appContext() {
+            return this.#appContext
         }
 
         get elements() {
@@ -84,7 +95,14 @@ export function defineComponent({ render, state, onMounted = emptyFn, onUnMounte
         }
 
         render() {
-            return render.call(this)
+            const vdom = render.call(this)
+
+            if (didCreateSlot()) {
+                fillSlots(vdom, this.#children)
+                resetDidCreateSlot()
+            }
+
+            return vdom
         }
 
         mount(hostEl, index = null) {
@@ -128,6 +146,10 @@ export function defineComponent({ render, state, onMounted = emptyFn, onUnMounte
                 // Promise.resolve().then(() => this.onPatched());
                 this.onPatched();
             });
+        }
+
+        setExternalContent(children) {
+            this.#children = children
         }
 
         #wireEventHandlers() {
