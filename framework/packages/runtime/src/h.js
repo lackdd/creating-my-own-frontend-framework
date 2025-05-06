@@ -63,7 +63,7 @@ export function extractChildren(vdom) {
 
 	for (const child of vdom.children) {
 		if (child.type === DOM_TYPES.FRAGMENT) {
-			children.push(...extractChildren(child, children))
+			children.push(...extractChildren(child))
 		} else {
 			children.push(child)
 		}
@@ -71,5 +71,4 @@ export function extractChildren(vdom) {
 
 	return children
 }
-
 
