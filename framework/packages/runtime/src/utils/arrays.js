@@ -1,6 +1,4 @@
 // remove null and undefined values from array of children
-import {c} from 'vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf';
-
 export function withoutNulls(arr) {
 	return arr.filter((item) => item != null);
 }
