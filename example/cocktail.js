@@ -1,67 +1,40 @@
 import {h, hFragment} from '../framework/packages/runtime/src/h.js'
 import {defineComponent} from '../framework/packages/runtime/src/component.js'
-
-const fetchItems = async() => {
-    const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php');
-    const data = await response.json();
-    return data.drinks[0];
-}
+import {dotjs} from 'dotjs/src/http-client';
 
 const Cocktail = defineComponent({
         state() {
             return {
-                cocktailName: "",
-                instructions: "",
-                imageURL: "",
-                isLoading: false,
             }
         },
 
         render() {
-            const { cocktailName, instructions, imageURL, isLoading } = this.state
+            if (this.state.isLoading) {
+                return h('p', {}, ['Loading...'])
+            }
 
-            // if (isLoading) {
-            //     return h('p', {}, ['Loading...'])
-            // }
+            if (this.state.error) {
+                return h('p', {}, [`Oops: ${this.state.error}`])
+            }
 
             return hFragment([
                 h(
-                    'h1', {}, [`Cocktail name: ${cocktailName}`],
+                    'h1', {}, [`Cocktail name: ${this.state.data ? this.state.data.drinks[0].strDrink : ""}`],
                 ),
                 h(
-                    'p', {}, [`Preparation instructions: ${instructions}`],
+                    'p', {style: {width: '70%', height: '100px'}}, [`Preparation instructions: ${this.state.data ? this.state.data.drinks[0].strInstructions : ""}`],
                 ),
                 h(
-                    'img', {src: imageURL}, [],
+                    'img', {src: `${this.state.data ? this.state.data.drinks[0].strDrinkThumb : ""}`, style: {width: '300px', height: '300px', padding: '2rem'}}, [],
                 ),
                 h(
                     'button', {on: { click: this.loadMore }}, ['Get another cocktail'],
                 ),
-
-                // isLoading
-                //     ? h('p', {}, ['Loading...'])
-                //     : h(
-                //         'button',
-                //         {
-                //             on: { click: this.loadMore }
-                //         },
-                //         ['Get a cocktail'],
-                //     ),
-                ]
-
+            ]
             )
         },
         async loadMore() {
-            this.updateState({cocktailName: "", instructions: "", imageURL: "", isLoading: true})
-
-            const {strDrink, strInstructions, strDrinkThumb} = await fetchItems();
-
-            this.updateState({
-                cocktailName: strDrink,
-                instructions: strInstructions,
-                imageURL: strDrinkThumb,
-                isLoading: false,
-            })
+            await dotjs.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`, cocktail, {})
         },
     }
 )
