@@ -72,3 +72,7 @@ export function extractChildren(vdom) {
 	return children
 }
 
+export function isComponent({ tag }) {
+	return typeof tag === 'function'
+}
+
