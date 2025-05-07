@@ -1,5 +1,5 @@
-import {h, hFragment} from '../framework/packages/runtime/src/h.js'
-import {defineComponent} from '../framework/packages/runtime/src/component.js'
+import {h, hFragment} from 'dotjs/src/h.js'
+import {defineComponent} from 'dotjs/src/component.js'
 import {dotjs} from 'dotjs/src/http-client';
 
 const Cocktail = defineComponent({

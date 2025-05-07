@@ -1,5 +1,5 @@
-import {createApp} from '../framework/packages/runtime/src/app.js'
-import {h, hFragment} from '../framework/packages/runtime/src/h.js'
+import {createApp} from 'dotjs/src/app.js'
+import {h, hFragment} from 'dotjs/src/h.js'
 
 function App(state, emit) {
 	return hFragment([

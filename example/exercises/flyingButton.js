@@ -1,6 +1,6 @@
-import {createApp} from '../framework/packages/runtime/src/app.js'
-import {h} from '../framework/packages/runtime/src/h.js'
-import {defineComponent} from '../framework/packages/runtime/src/component.js'
+import {createApp} from 'dotjs/src/app.js'
+import {h} from 'dotjs/src/h.js'
+import {defineComponent} from 'dotjs/src/component.js'
 
 function getRandomInt() {
 	return Math.floor(Math.random() * 100);
