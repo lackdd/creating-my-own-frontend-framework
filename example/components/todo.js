@@ -1,8 +1,7 @@
-import {createApp} from '../framework/packages/runtime/src/app.js'
-import {h, hFragment} from '../framework/packages/runtime/src/h.js'
+import {h, hFragment} from 'dotjs/src/h.js'
 import {defineComponent} from 'dotjs/src';
 
-const TODOapp = defineComponent({
+export const TODOapp = defineComponent({
 	state() {
 		return {
 			currentTodo: "",
@@ -10,28 +9,37 @@ const TODOapp = defineComponent({
 				{ id: crypto.randomUUID(), text: 'Walk the dog' },
 				{ id: crypto.randomUUID(), text: 'Water the plants' },
 				{ id: crypto.randomUUID(), text: 'Sand the chairs' },
-				]
+				],
 		};
 	},
 
 	render() {
 		const { todos, currentTodo } = this.state;
-		return hFragment([
-			h('h1', {style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}, ['MY TODOS']),
-			h(CreateTODO, {
-				currentTodo,
-				on: {
-					update: this.updateCurrentTodo,
-					add: this.addTodo
-				}
-			}),
-			h(TodoList, {
-				todos,
-				on: {
-					remove: this.removeTodo,
-					edit: this.editTodo
-				}
-			})
+		const router = this.props.router
+
+		return h('div', {
+			id: 'todos-container',
+		}, [
+			hFragment([
+				h('h1', {style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}, ['MY TODOS']),
+				h(CreateTODO, {
+					currentTodo,
+					on: {
+						update: this.updateCurrentTodo,
+						add: this.addTodo
+					}
+				}),
+				h(TodoList, {
+					todos,
+					on: {
+						remove: this.removeTodo,
+						edit: this.editTodo
+					}
+				}),
+				h('button', {on: { click: () => {
+					router.navigateTo('/cocktail')
+					 }}}, ['Go to cocktail page']),
+			]),
 		])
 	},
 
@@ -104,36 +112,52 @@ const CreateTODO = defineComponent({
 	render() {
 		const {text} = this.state
 
-		return h('div', {style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}, [
-			h('label', {for: 'todo-input'}, ['New TODO']),
-			h('input', {
-				type: 'text',
-				id: 'todo-input',
-				autocomplete: "off",
-				value: text,
-				on: {
-					input: ({target}) => {
-						// this.updateState({currentTodo: + target.value})
-						// this.emit('update-current-todo', target.value)
-						this.updateState({text: target.value})
+		return hFragment([
+			h('div', {
+				style: {
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					justifyContent: 'center'
+				}
+			}, [
+				h('label',
+					{ for: 'todo-input',
+					style: {textAlign: 'left', width: '90%'}},
+					['New TODO']),
+			]),
+			h('div', {
+				style: {
+					display: 'flex',
+					flexDirection: 'row',
+					alignItems: 'center',
+					justifyContent: 'center'
+				}
+			}, [
+				h('input', {
+					type: 'text',
+					id: 'todo-input',
+					autocomplete: "off",
+					value: text,
+					style: {width: '70%'},
+					on: {
+						input: ({ target }) => {
+							this.updateState({ text: target.value });
+						},
+						keydown: ({ key }) => {
+							if (key === 'Enter' && text.length >= 3) {
+								this.addToDo();
+							}
+						},
 					},
-					keydown: ({key}) => {
-						if (key === 'Enter' && text.length >= 3) {
-							// this.emit('add-todo')
-							this.addToDo();
-						}
-					},
-				},
-			}),
-			h(
-				'button',
-				{
+				}),
+				h('button', {
 					disabled: text.length < 3,
-					on: {click: () => this.addToDo()},
-				},
-				['Add']
-			),
-		])
+					style: {marginLeft: 'auto'},
+					on: { click: () => this.addToDo() },
+				}, ['Add']),
+			])
+		]);
 	},
 
 	addToDo() {
@@ -151,7 +175,7 @@ const TodoList = defineComponent({
 		const {todos} = this.props
 		console.log("todos in TodoList: ", todos)
 		return h('ul',
-			{style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}},
+			{style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '0'}},
 			todos.map((todo, index) => h(TodoItem, {
 				key: todo.id,
 				todo: todo.text,
@@ -203,7 +227,7 @@ const TodoItem = defineComponent({
 				['Cancel']
 			),
 		]) :
-		 h('li', {}, [
+		 h('li', {style: {width: '100%', display: 'flex', flex: '1', justifyContent: 'space-between', padding: '0.2rem'}}, [
 			h('span', {
 					on: {
 						dblclick: () => {
@@ -215,11 +239,12 @@ const TodoItem = defineComponent({
 				[original]
 			),
 			h('button', {
-					on: {
-						click:  () => {
-							this.emit('remove', this.props.index);
-						}
-					}
+				on: {
+					click:  () => {
+						this.emit('remove', this.props.index);
+					}},
+				style: {
+				}
 				},
 				['Done']
 			),
@@ -235,5 +260,3 @@ const TodoItem = defineComponent({
 		this.updateState({isEditing: false});
 	}
 })
-
-createApp(TODOapp, { }).mount(document.body);
