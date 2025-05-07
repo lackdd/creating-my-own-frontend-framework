@@ -49,8 +49,10 @@ export const RouterOutlet = defineComponent({
     render() {
         const { matchedRoute } = this.state
 
-        return h('div', { id: 'router-outlet'}, [
-            matchedRoute ? h(matchedRoute.component) : null,
+        return h('div', { id: 'router-outlet', style: {width: '100%', height: '100%'}}, [
+            matchedRoute ? h(matchedRoute.component, {
+                router: this.appContext.router
+            }) : null,
         ])
     },
 })
