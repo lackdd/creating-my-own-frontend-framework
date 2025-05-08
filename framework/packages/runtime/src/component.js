@@ -172,6 +172,11 @@ export function defineComponent({ render, state, onMounted = emptyFn, onUnMounte
         emit(eventName, payload) {
             this.#dispatcher.dispatch(eventName, payload)
         }
+
+        subscribeTo(store, callback) {
+            const unsubscribe = store.subscribe(callback);
+            this.#subscriptions.push(unsubscribe);
+        }
     }
 
     for (const methodName in methods) {
