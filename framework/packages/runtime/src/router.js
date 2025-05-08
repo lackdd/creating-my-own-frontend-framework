@@ -171,6 +171,20 @@ export class HashRouter {
             redirectPath: null,
         }
     }
+
+    updateRouteComponent(path, newComponent) {
+        const route = this.#matchers.find(matcher => matcher.route.path === path);
+        if (route) {
+            // Update the route's component
+            route.route.component = newComponent;
+
+            // Trigger navigation to re-render the updated component
+            if (this.#matchedRoute && this.#matchedRoute.path === path) {
+                // If we are already on the route, re-render it
+                this.navigateTo(path);
+            }
+        }
+    }
 }
 
 export class NoopRouter {
