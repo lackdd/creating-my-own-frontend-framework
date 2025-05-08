@@ -1,5 +1,6 @@
 import {h, hFragment} from 'dotjs/src/h.js'
 import {defineComponent} from 'dotjs/src';
+import {globalState} from '../main';
 
 export const TODOapp = defineComponent({
 	state() {
@@ -22,6 +23,7 @@ export const TODOapp = defineComponent({
 		}, [
 			hFragment([
 				h('h1', {style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}, ['MY TODOS']),
+				h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
 				h(CreateTODO, {
 					currentTodo,
 					on: {

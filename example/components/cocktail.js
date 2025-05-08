@@ -1,5 +1,6 @@
 import {defineComponent, h, hFragment} from 'dotjs/src';
 import {dotjs} from "dotjs/src/http-client";
+import {globalState} from '../main';
 
 export const Cocktail = defineComponent({
 	state() {
@@ -22,12 +23,13 @@ export const Cocktail = defineComponent({
 
 			return hFragment([
 				h('h1', {}, ['Cocktails']),
+				h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
 				h(
 					'p', {}, [`Cocktail name: ${strDrink || ""}`],
 				),
-				h(
-					'p', {style: {width: '70%', height: '100px'}}, [`Preparation instructions: ${strInstructions || ""}`],
-				),
+				// h(
+				// 	'p', {style: {width: '70%', height: '100px'}}, [`Preparation instructions: ${strInstructions || ""}`],
+				// ),
 				h(
 					'img', {src: `${strDrinkThumb || ""}`, style: {width: '300px', height: '300px', padding: '2rem'}}, [],
 				),
@@ -37,15 +39,38 @@ export const Cocktail = defineComponent({
 				h('button', {on: { click: () => {
 							this.props.router.navigateTo('/')
 						}}}, ['Go to todo page']),
-				// h('button', {on: {click: this.loadMore}}, ['load more cocktails']),
-				h('button', {on: {click: () => this.emit('saveToList', strDrink)}}, ['Save to TODO'])
+				h('button', {on: {click: () => {
+							this.props.saveToListHandler(strDrink);
+						}}}, ['Save to TODO']),
+				h('button', {
+					on: {
+						click: () => {
+							globalState.setState({ savedItems: [1,2, 3] });
+							console.log("global state edited");
+						}
+					}
+				}, ["Edit global state"]),
 			])
 		}
 	},
 	loadMore()  {
-		dotjs.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`, this, {})
+		dotjs.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`, this, {});
+		console.log("this.state: ", this.state);
 	},
 	onMounted() {
+		// this.subscribeTo(globalState, (newState) => {
+		// 	console.log("incoming globalState update:", newState);
+		// 	this.updateState({ ...this.state.global, ...newState });
+		// 	console.log("after updateState, this.state:", this.state);
+		// });
+
+		this.subscribeTo(globalState, (newGlobalState) => {
+			// this.updateState({ global: { ...newGlobalState } }); // again, fresh object
+			this.updateState({});
+		});
+
+		// this.updateState({global: globalState.getState})
+
 		dotjs.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`, this, {});
-	}
+	},
 })
