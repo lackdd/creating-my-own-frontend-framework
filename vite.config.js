@@ -1,10 +1,19 @@
 // vite.config.js
-export default {
-	root: 'example', // Make sure to serve from the project root
-	server: {
-		port: 3000, // Or choose any available port
-	},
-	build: {
-		outDir: '../dist', // Output the build in the /dist folder from the root
-	},
-}
+import {defineConfig} from 'vite';
+
+export default defineConfig(() => {
+	return {
+		root: './example',
+		server: {
+			port: 3000,
+			hmr: {
+				protocol: 'ws', // WebSocket protocol for HMR
+				host: 'localhost',
+			},
+			// hmr: false,
+		},
+		build: {
+			outDir: '../dist',
+		},
+	}
+});
