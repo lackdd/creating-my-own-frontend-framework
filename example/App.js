@@ -15,6 +15,8 @@ export const App = defineComponent({
 	},
 
 	render() {
+		const saveHandler = this.handleSaveToList.bind(this);
+
 		return hFragment([
 			h('header', {}, ["header"]),
 			h('span', {}, [`Cocktails: ${this.state.savedItems}`]),

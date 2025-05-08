@@ -47,12 +47,17 @@ export const RouterOutlet = defineComponent({
     },
 
     render() {
-        const { matchedRoute } = this.state
+        const { matchedRoute } = this.state;
+
+        const { router, ...otherProps } = this.props;
+
+        const routeComponentProps = {
+            router: this.appContext.router,
+            ...otherProps
+        };
 
         return h('div', { id: 'router-outlet', style: {width: '100%', height: '100%'}}, [
-            matchedRoute ? h(matchedRoute.component, {
-                router: this.appContext.router
-            }) : null,
-        ])
-    },
+            matchedRoute ? h(matchedRoute.component, routeComponentProps) : null,
+        ]);
+    }
 })
