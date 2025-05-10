@@ -14,8 +14,15 @@ export const App = defineComponent({
 		});
 	},
 
+	handleResetSavedItems() {
+		this.updateState({
+			savedItems: []
+		});
+	},
+
 	render() {
 		const saveHandler = this.handleSaveToList.bind(this);
+		const resetHandler = this.handleResetSavedItems.bind(this);
 
 		return hFragment([
 			h('header', {}, [
@@ -24,7 +31,8 @@ export const App = defineComponent({
 			// h('span', {}, [`Cocktails: ${this.state.savedItems}`]),
 			h('main', {}, [h(RouterOutlet, {
 				saveToListHandler: saveHandler,
-				savedItems: this.state.savedItems
+				savedItems: this.state.savedItems,
+				resetSavedItemsHandler: resetHandler,
 			})
 			]),
 			h('footer', {}, ["Example project for the dotjs frontend framework"]),
