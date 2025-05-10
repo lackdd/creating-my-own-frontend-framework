@@ -10,7 +10,7 @@ export const App = defineComponent({
 	handleSaveToList(drinkName) {
 		console.log("Saving to list: ", drinkName);
 		this.updateState({
-			savedItems: [...this.state.savedItems, drinkName]
+			savedItems: [...this.state.savedItems, {id: crypto.randomUUID(), text: `Make cocktail: ${drinkName}`}]
 		});
 	},
 
@@ -18,14 +18,16 @@ export const App = defineComponent({
 		const saveHandler = this.handleSaveToList.bind(this);
 
 		return hFragment([
-			h('header', {}, ["header"]),
-			h('span', {}, [`Cocktails: ${this.state.savedItems}`]),
-			h('main', {style: {width: '30%'}}, [h(RouterOutlet, {
+			h('header', {}, [
+				h('nav', {}, [])
+			]),
+			// h('span', {}, [`Cocktails: ${this.state.savedItems}`]),
+			h('main', {}, [h(RouterOutlet, {
 				saveToListHandler: saveHandler,
 				savedItems: this.state.savedItems
 			})
 			]),
-			h('footer', {}, ["footer"]),
+			h('footer', {}, ["Example project for the dotjs frontend framework"]),
 		]);
 	}
 });

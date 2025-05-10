@@ -11,7 +11,7 @@ export const Cocktail = defineComponent({
 	render() {
 
 		if (this.state.isLoading) {
-			return h('p', {}, ['Loading...'])
+			return h('p', {className: 'loading'}, ['Loading...'])
 		}
 
 		if (this.state.error) {
@@ -21,56 +21,54 @@ export const Cocktail = defineComponent({
 		if (!this.state.isLoading) {
 			const { strDrink, strInstructions, strDrinkThumb } = this.state.data.drinks[0];
 
-			return hFragment([
-				h('h1', {}, ['Cocktails']),
-				h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
-				h(
-					'p', {}, [`Cocktail name: ${strDrink || ""}`],
-				),
-				// h(
-				// 	'p', {style: {width: '70%', height: '100px'}}, [`Preparation instructions: ${strInstructions || ""}`],
-				// ),
-				h(
-					'img', {src: `${strDrinkThumb || ""}`, style: {width: '300px', height: '300px', padding: '2rem'}}, [],
-				),
-				h(
-					'button', {on: { click: this.loadMore }}, ['Get another cocktail'],
-				),
-				h('button', {on: { click: () => {
-							this.props.router.navigateTo('/')
-						}}}, ['Go to todo page']),
-				h('button', {on: {click: () => {
-							this.props.saveToListHandler(strDrink);
-						}}}, ['Save to TODO']),
-				h('button', {
-					on: {
-						click: () => {
-							globalState.setState({ savedItems: [1,2, 3] });
-							console.log("global state edited");
+			return h('div', {id: 'cocktails-container'}, [
+				hFragment([
+					h('h1', {}, ['Cocktails']),
+					h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
+					h(
+						'p', {}, [`Cocktail name: ${strDrink || ""}`],
+					),
+					// h(
+					// 	'p', {style: {width: '70%', height: '100px'}}, [`Preparation instructions: ${strInstructions || ""}`],
+					// ),
+					h(
+						'img', {src: `${strDrinkThumb || ""}`, style: {width: '300px', height: '300px', padding: '2rem'}}, [],
+					),
+					h(
+						'button', {on: { click: this.loadMore }}, ['Get another cocktail'],
+					),
+					h('button', {on: { click: () => {
+								this.props.router.navigateTo('/')
+							}}}, ['Go to todo page']),
+					h('button', {on: {click: () => {
+								this.props.saveToListHandler(strDrink);
+							}}}, ['Save to TODO']),
+					h('button', {
+						on: {
+							click: () => {
+								globalState.setState({ savedItems: [1,2, 3] });
+								console.log("global state edited");
+							}
 						}
-					}
-				}, ["Edit global state"]),
+					}, ["Edit global state"]),
+				])
 			])
+
+
 		}
 	},
 	loadMore()  {
 		dotjs.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`, this, {});
-		console.log("this.state: ", this.state);
 	},
-	onMounted() {
-		// this.subscribeTo(globalState, (newState) => {
-		// 	console.log("incoming globalState update:", newState);
-		// 	this.updateState({ ...this.state.global, ...newState });
-		// 	console.log("after updateState, this.state:", this.state);
-		// });
+	async onMounted() {
 
 		this.subscribeTo(globalState, (newGlobalState) => {
 			// this.updateState({ global: { ...newGlobalState } }); // again, fresh object
 			this.updateState({});
 		});
 
-		// this.updateState({global: globalState.getState})
+		await dotjs.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`, this, {});
 
-		dotjs.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`, this, {});
+		// this.updateState({isLoading: true});
 	},
 })

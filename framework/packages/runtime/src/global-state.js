@@ -11,13 +11,11 @@ export class GlobalState {
 	}
 
 	setState(newState) {
-		console.log('setState called with:', newState);
 		this.state = { ...newState }; // ensure new object ref
 		this.listeners.forEach(fn => fn(this.state));
 	}
 
 	subscribe(fn) {
-		console.log('Subscriber added');
 		this.listeners.add(fn);
 		return () => this.listeners.delete(fn); // unsubscribe
 	}

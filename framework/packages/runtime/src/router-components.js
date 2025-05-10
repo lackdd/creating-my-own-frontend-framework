@@ -56,7 +56,7 @@ export const RouterOutlet = defineComponent({
             ...otherProps
         };
 
-        return h('div', { id: 'router-outlet', style: {width: '100%', height: '100%'}}, [
+        return h('div', { id: 'router-outlet', style: {width: '100vw', height: '100vh'}}, [
             matchedRoute ? h(matchedRoute.component, routeComponentProps) : null,
         ]);
     }

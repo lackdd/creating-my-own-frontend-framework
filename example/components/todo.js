@@ -24,6 +24,7 @@ export const TODOapp = defineComponent({
 			hFragment([
 				h('h1', {style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}, ['MY TODOS']),
 				h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
+				h('p', {}, [`savedItems from props: ${this.props.savedItems || []}`]),
 				h(CreateTODO, {
 					currentTodo,
 					on: {
@@ -47,20 +48,25 @@ export const TODOapp = defineComponent({
 
 	onMounted() {
 		const _todos = localStorage.getItem("todos");
-		console.log("Getting todos from local storage on mount", _todos);
+		console.log("_todos: ", _todos);
 
-		if (_todos == null) {
+		if (_todos == null || _todos === "") {
 			localStorage.setItem("todos", JSON.stringify(this.state.todos));
-			console.log("Setting todos to local storage on mount", this.state.todos);
+			console.log("this.state.todos: ", this.state.todos);
+			// console.log("Setting todos to local storage on mount", this.state.todos);
 		} else {
 			try {
 				const parsedTodos = JSON.parse(_todos);
-				console.log("Updating todos from local storage", parsedTodos);
+				console.log("parsedTodos: ", parsedTodos);
 				this.updateState({ todos: parsedTodos });
 			} catch (e) {
 				console.warn("Failed to parse todos from localStorage", e);
 			}
 		}
+		this.updateState({ todos: [...this.state.todos, ...this.props.savedItems] });
+		console.log("this.state.todos: ", this.state.todos);
+		console.log("this.props.savedItems: ", this.props.savedItems);
+
 	},
 
 	onUnMounted() {
@@ -75,7 +81,7 @@ export const TODOapp = defineComponent({
 	onPatched() {
 		if (Array.isArray(this.state.todos)) {
 			localStorage.setItem("todos", JSON.stringify(this.state.todos));
-			console.log("Saved todos to local storage after patch", this.state.todos);
+			// console.log("Saved todos to local storage after patch", this.state.todos);
 		} else {
 			console.warn("State.todos is not an array. Skipping localStorage save.");
 		}
@@ -99,7 +105,7 @@ export const TODOapp = defineComponent({
 		const newTodos = [...this.state.todos];
 		newTodos[index] = {...newTodos[index], text: edited };
 		this.updateState({todos: newTodos});
-		console.log("index: ", index)
+		// console.log("index: ", index)
 		// localStorage.setItem("todos", JSON.stringify(this.state.todos));
 	},
 })
@@ -175,7 +181,7 @@ const TodoList = defineComponent({
 
 	render() {
 		const {todos} = this.props
-		console.log("todos in TodoList: ", todos)
+		// console.log("todos in TodoList: ", todos)
 		return h('ul',
 			{style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '0'}},
 			todos.map((todo, index) => h(TodoItem, {
