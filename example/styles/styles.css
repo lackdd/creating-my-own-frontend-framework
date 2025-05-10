@@ -9,49 +9,235 @@ body {
 	width: 100vw;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	position: relative;
 	background-color: #222222;
 	color: white;
+	overflow: hidden;
 }
 
 main {
 	width: 100vw;
-	height: calc(100% - 40px)
+	/*height: calc(100% - 100px)*/
+	flex: 1;
+	overflow: hidden;
 }
 
-.todos-container, .cocktails-container {
-	width: 40%;
-}
-
-.todos-container {
-
-}
-
-.cocktails-container {
-
-}
-
-header, footer {
-	width: 100vw;
-	height: 20px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-nav {
+#todo-container,
+#cocktails-container {
 	width: 100%;
 	height: 100%;
 	display: flex;
-	flex-direction: row;
-	justify-content: space-evenly;
+	flex-direction: column;
+	/*justify-content: center;*/
+	padding: 15% 20%;
 }
 
+h1 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 4rem;
+}
+
+#todo-container {
+
+	.label-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center
+	}
+
+	.input-container {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+
+		.extra-input-container {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			width: 70%;
+			position: relative;
+
+			input {
+				height: 1.5rem;
+				border-radius: 10px;
+				padding: 0.25rem 1rem 0.25rem 0.25rem;
+				border: none;
+				width: 100%;
+			}
+
+			.add {
+				all: unset;
+				position: absolute;
+				right: -5px;
+				border-radius: 50%;
+				height: 40px;
+				width: 40px;
+				cursor: pointer;
+				background-color: goldenrod;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border: 2px solid white;
+			}
+
+			.add:hover {
+				background-color: gold;
+				color: black;
+			}
+		}
+	}
+
+	.todo-list {
+		height: 15rem;
+		overflow: scroll;
+		margin-top: 1rem;
+
+		.todo-item {
+			border: 1px solid transparent;
+			border-radius: 10px;
+			width: 100%;
+			display: flex;
+			flex: 1;
+			justify-content: space-between;
+			padding: 0.5rem 1rem;
+
+			input {
+				height: 100%;
+				width: 50%;
+				border-radius: 10px;
+				background-color: transparent;
+				color: white;
+				border: 1px solid goldenrod;
+				padding: 0.25rem 0.25rem;
+			}
+
+			span {
+				padding: 0.25rem 0.25rem;
+			}
+
+			span:hover {
+				color: goldenrod;
+				cursor: pointer;
+			}
+
+			.todo-button {
+				all: unset;
+			}
+
+			.todo-button:hover {
+				color: goldenrod;
+				cursor: pointer;
+			}
+
+
+			.todo-buttons {
+				width: 100px;
+				display: flex;
+				justify-content: space-between;
+			}
+
+		}
+
+		.todo-item:hover {
+			border: 1px solid white;
+		}
+	}
+}
+
+#cocktails-container {
+
+	.cocktail {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+
+		.cocktail-name {
+			font-size: 1.25rem;
+			text-decoration: underline goldenrod;
+		}
+
+		img {
+			border-radius: 50%;
+			width: 300px;
+			height: 300px;
+			padding: 2rem;
+		}
+
+		.cocktail-buttons {
+			width: 60%;
+			display: flex;
+			justify-content: space-between;
+
+			button {
+				all: unset;
+				cursor: pointer;
+				border: 1px solid white;
+				border-radius: 10px;
+				padding: 5px;
+				background-color: goldenrod;
+			}
+
+			button:hover {
+				background-color: gold;
+				color: black;
+				border: 1px solid black;
+			}
+		}
+
+	}
+
+}
+
+header,
+footer {
+	height: 50px;
+	width: 100vw;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+header {
+	height: 80px;
+
+	nav {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-evenly;
+
+		button {
+			all: unset;
+			cursor: pointer;
+			color: goldenrod;
+			font-size: 1.2rem;
+		}
+
+		button:hover {
+			color: gold;
+		}
+	}
+}
+
+footer {
+	height: 50px;
+}
 
 .loading {
 	height: 100vh;
 	width: 100vw;
-	background-color: red;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	text-justify: auto;
 }
