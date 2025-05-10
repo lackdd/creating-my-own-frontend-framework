@@ -69,7 +69,7 @@ export const TODOapp = defineComponent({
 
 	},
 
-	onUnMounted() {
+	onUnmounted() {
 		localStorage.setItem("todos", JSON.stringify(this.state.todos));
 		console.log("Setting todos to local storage on unmount", this.state.todos);
 	},
