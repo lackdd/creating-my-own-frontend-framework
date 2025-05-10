@@ -1,6 +1,5 @@
-import {h, hFragment} from 'dotjs/src/h.js'
+import {h, hFragment, hSlot} from 'dotjs/src/h.js';
 import {defineComponent} from 'dotjs/src';
-import {globalState} from '../main';
 
 export const TODOapp = defineComponent({
 	state() {
@@ -19,12 +18,12 @@ export const TODOapp = defineComponent({
 		const router = this.props.router
 
 		return h('div', {
-			id: 'todos-container',
+			id: 'todo-container',
 		}, [
 			hFragment([
-				h('h1', {style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}, ['MY TODOS']),
-				h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
-				h('p', {}, [`savedItems from props: ${this.props.savedItems || []}`]),
+				h('h1', {}, ['MY TODOS']),
+				// h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
+				// h('p', {}, [`savedItems from props: ${this.props.savedItems || []}`]),
 				h(CreateTODO, {
 					currentTodo,
 					on: {
@@ -39,39 +38,37 @@ export const TODOapp = defineComponent({
 						edit: this.editTodo
 					}
 				}),
-				h('button', {on: { click: () => {
-					router.navigateTo('/cocktail')
-					 }}}, ['Go to cocktail page']),
+				// h('button', {on: { click: () => {
+				// 	router.navigateTo('/cocktail')
+				// 	 }}}, ['Go to cocktail page']),
 			]),
 		])
 	},
 
 	onMounted() {
 		const _todos = localStorage.getItem("todos");
-		console.log("_todos: ", _todos);
 
-		if (_todos == null || _todos === "") {
-			localStorage.setItem("todos", JSON.stringify(this.state.todos));
-			console.log("this.state.todos: ", this.state.todos);
-			// console.log("Setting todos to local storage on mount", this.state.todos);
+		console.log("this.state.todos: ", this.state.todos);
+		console.log("this.props.savedItems: ", this.props.savedItems);
+
+		if (_todos == null) {
+			// localStorage.setItem("todos", JSON.stringify(this.state.todos));
+			console.log("todos null in localStorage");
 		} else {
 			try {
 				const parsedTodos = JSON.parse(_todos);
-				console.log("parsedTodos: ", parsedTodos);
 				this.updateState({ todos: parsedTodos });
 			} catch (e) {
 				console.warn("Failed to parse todos from localStorage", e);
 			}
 		}
 		this.updateState({ todos: [...this.state.todos, ...this.props.savedItems] });
-		console.log("this.state.todos: ", this.state.todos);
-		console.log("this.props.savedItems: ", this.props.savedItems);
+		this.props.resetSavedItemsHandler();
 
 	},
 
 	onUnmounted() {
 		localStorage.setItem("todos", JSON.stringify(this.state.todos));
-		console.log("Setting todos to local storage on unmount", this.state.todos);
 	},
 
 	updateCurrentTodo(value) {
@@ -81,7 +78,6 @@ export const TODOapp = defineComponent({
 	onPatched() {
 		if (Array.isArray(this.state.todos)) {
 			localStorage.setItem("todos", JSON.stringify(this.state.todos));
-			// console.log("Saved todos to local storage after patch", this.state.todos);
 		} else {
 			console.warn("State.todos is not an array. Skipping localStorage save.");
 		}
@@ -98,15 +94,12 @@ export const TODOapp = defineComponent({
 		this.updateState({
 			todos: todos.filter((_, _index) => _index !== index),
 		})
-		// localStorage.setItem("todos", JSON.stringify(this.state.todos));
 	},
 
 	editTodo({ edited, index}) {
 		const newTodos = [...this.state.todos];
 		newTodos[index] = {...newTodos[index], text: edited };
 		this.updateState({todos: newTodos});
-		// console.log("index: ", index)
-		// localStorage.setItem("todos", JSON.stringify(this.state.todos));
 	},
 })
 
@@ -122,48 +115,38 @@ const CreateTODO = defineComponent({
 
 		return hFragment([
 			h('div', {
-				style: {
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'center',
-					justifyContent: 'center'
-				}
+				className: 'label-container'
 			}, [
 				h('label',
-					{ for: 'todo-input',
-					style: {textAlign: 'left', width: '90%'}},
+					{ for: 'todo-input'},
 					['New TODO']),
 			]),
-			h('div', {
-				style: {
-					display: 'flex',
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'center'
-				}
-			}, [
-				h('input', {
-					type: 'text',
-					id: 'todo-input',
-					autocomplete: "off",
-					value: text,
-					style: {width: '70%'},
-					on: {
-						input: ({ target }) => {
-							this.updateState({ text: target.value });
+			h('div', {className: 'input-container'}, [
+				h('div', {
+					className: 'extra-input-container'
+				}, [
+					h('input', {
+						type: 'text',
+						id: 'todo-input',
+						autocomplete: "off",
+						value: text,
+						on: {
+							input: ({ target }) => {
+								this.updateState({ text: target.value });
+							},
+							keydown: ({ key }) => {
+								if (key === 'Enter' && text.length >= 3) {
+									this.addToDo();
+								}
+							},
 						},
-						keydown: ({ key }) => {
-							if (key === 'Enter' && text.length >= 3) {
-								this.addToDo();
-							}
-						},
-					},
-				}),
-				h('button', {
-					disabled: text.length < 3,
-					style: {marginLeft: 'auto'},
-					on: { click: () => this.addToDo() },
-				}, ['Add']),
+					}),
+					h('button', {
+						disabled: text.length < 3,
+						className: 'todo-button add',
+						on: { click: () => this.addToDo() },
+					}, ['Add']),
+				])
 			])
 		]);
 	},
@@ -183,7 +166,7 @@ const TodoList = defineComponent({
 		const {todos} = this.props
 		// console.log("todos in TodoList: ", todos)
 		return h('ul',
-			{style: {display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '0'}},
+			{className: 'todo-list'},
 			todos.map((todo, index) => h(TodoItem, {
 				key: todo.id,
 				todo: todo.text,
@@ -192,7 +175,8 @@ const TodoList = defineComponent({
 					remove: (index) => this.emit('remove', index),
 					edit: ({ edited, index}) => this.emit('edit', { edited, index})
 				}
-			}))
+			}, [ h('span', {style: {display: 'none'}}, [`[${index + 1}]`])]
+			))
 		)
 	},
 })
@@ -209,33 +193,40 @@ const TodoItem = defineComponent({
 	render() {
 		const { original, edited, isEditing } = this.state;
 
-		 return isEditing ? h('li', {}, [
+		 return isEditing ? h('li', {className: 'todo-item'}, [
+			 hSlot(),
 			h('input', {
 				value: edited,
 				on: {
 					input: ({ target }) => this.updateState({ edited: target.value })
 				},
 			}),
-			h('button', {
-				on: {
-					click: (target) => {
-						this.saveEdit();
-					}
-				}
-			},
-				['Save']
-			),
-			h('button', {
-					on: {
-						click: () => {
-							this.cancelEdit();
-						}
-					}
-				},
-				['Cancel']
-			),
+			 h('div', {className: 'todo-buttons'}, [
+				 hFragment([
+					 h('button', {
+							 on: {
+								 click: (target) => {
+									 this.saveEdit();
+								 }
+							 },
+							 className: 'todo-button'
+						 },
+						 ['Save']
+					 ),
+					 h('button', {
+							 on: {
+								 click: () => {
+									 this.cancelEdit();
+								 }
+							 },
+							 className: 'todo-button'
+						 },
+						 ['Cancel']
+					 ),
+				 ])
+			 ])
 		]) :
-		 h('li', {style: {width: '100%', display: 'flex', flex: '1', justifyContent: 'space-between', padding: '0.2rem'}}, [
+		 h('li', {className: 'todo-item',}, [
 			h('span', {
 					on: {
 						dblclick: () => {
@@ -251,8 +242,7 @@ const TodoItem = defineComponent({
 					click:  () => {
 						this.emit('remove', this.props.index);
 					}},
-				style: {
-				}
+					className: 'todo-button'
 				},
 				['Done']
 			),

@@ -1,5 +1,6 @@
 // example/App.js
 import { defineComponent, h, hFragment, RouterOutlet } from 'dotjs/src';
+import {router} from './router';
 
 export const App = defineComponent({
 	state() {
@@ -8,7 +9,6 @@ export const App = defineComponent({
 		}},
 
 	handleSaveToList(drinkName) {
-		console.log("Saving to list: ", drinkName);
 		this.updateState({
 			savedItems: [...this.state.savedItems, {id: crypto.randomUUID(), text: `Make cocktail: ${drinkName}`}]
 		});
@@ -26,7 +26,16 @@ export const App = defineComponent({
 
 		return hFragment([
 			h('header', {}, [
-				h('nav', {}, [])
+				h('nav', {}, [
+					hFragment([
+						h('button', {on: { click: () => {
+									router.navigateTo('/')
+								}}}, ['TODO list']),
+					]),
+					h('button', {on: { click: () => {
+								router.navigateTo('/cocktail')
+							}}}, ['Cocktails']),
+					])
 			]),
 			// h('span', {}, [`Cocktails: ${this.state.savedItems}`]),
 			h('main', {}, [h(RouterOutlet, {
@@ -35,7 +44,7 @@ export const App = defineComponent({
 				resetSavedItemsHandler: resetHandler,
 			})
 			]),
-			h('footer', {}, ["Example project for the dotjs frontend framework"]),
+			h('footer', {}, ["Example project for the dotjs frontend framework by Marius Soon and Andre Berezin"]),
 		]);
 	}
 });

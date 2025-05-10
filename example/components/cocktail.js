@@ -1,6 +1,6 @@
 import {defineComponent, h, hFragment} from 'dotjs/src';
 import {dotjs} from "dotjs/src/http-client";
-import {globalState} from '../main';
+import {globalState} from '../global.js';
 
 export const Cocktail = defineComponent({
 	state() {
@@ -22,35 +22,30 @@ export const Cocktail = defineComponent({
 			const { strDrink, strInstructions, strDrinkThumb } = this.state.data.drinks[0];
 
 			return h('div', {id: 'cocktails-container'}, [
-				hFragment([
+				h('div', {className: 'cocktail'}, [
 					h('h1', {}, ['Cocktails']),
-					h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
-					h(
-						'p', {}, [`Cocktail name: ${strDrink || ""}`],
-					),
-					// h(
-					// 	'p', {style: {width: '70%', height: '100px'}}, [`Preparation instructions: ${strInstructions || ""}`],
-					// ),
-					h(
-						'img', {src: `${strDrinkThumb || ""}`, style: {width: '300px', height: '300px', padding: '2rem'}}, [],
-					),
-					h(
-						'button', {on: { click: this.loadMore }}, ['Get another cocktail'],
-					),
-					h('button', {on: { click: () => {
-								this.props.router.navigateTo('/')
-							}}}, ['Go to todo page']),
-					h('button', {on: {click: () => {
-								this.props.saveToListHandler(strDrink);
-							}}}, ['Save to TODO']),
-					h('button', {
-						on: {
-							click: () => {
-								globalState.setState({ savedItems: [1,2, 3] });
-								console.log("global state edited");
-							}
-						}
-					}, ["Edit global state"]),
+					hFragment([
+						// h('p', {}, [`global state: ${globalState.getState.savedItems || []}`]),
+						h(
+							'p', {className: 'cocktail-name'}, [`${strDrink || ""}`],
+						),
+						// h(
+						// 	'p', {style: {width: '70%', height: '100px'}}, [`Preparation instructions: ${strInstructions || ""}`],
+						// ),
+						h(
+							'img', {src: `${strDrinkThumb || ""}`}, [],
+						),
+						h('div', {className: 'cocktail-buttons'}, [
+							hFragment([
+								h(
+									'button', {on: { click: this.loadMore }}, ['Get new cocktail'],
+								),
+								h('button', {on: {click: () => {
+											this.props.saveToListHandler(strDrink);
+										}}}, ['Add to TODO']),
+							])
+						])
+					])
 				])
 			])
 
