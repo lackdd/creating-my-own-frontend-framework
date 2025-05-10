@@ -1,6 +1,6 @@
 import {HashRouter} from 'dotjs/src';
-import {TODOapp} from './components/todo'
-import {Cocktail} from './components/cocktail'
+import {TODOapp} from './components/todo.js'
+import {Cocktail} from './components/cocktail.js'
 
 const routes = [
 	{
