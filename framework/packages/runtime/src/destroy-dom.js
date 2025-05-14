@@ -4,6 +4,7 @@ import { enqueueJob } from './scheduler'
 
 export function destroyDom(vdom) {
     // console.log("Destroying dom");
+    if (!vdom) return; // fix
 
     const {type} = vdom
 
@@ -24,9 +25,14 @@ export function destroyDom(vdom) {
         }
 
         case DOM_TYPES.COMPONENT: {
-            vdom.component.unmount()
-            enqueueJob(() => vdom.component.onUnmounted())
+            if (vdom.component) { // Use internal check
+                vdom.component.unmount()
+                enqueueJob(() => vdom.component.onUnmounted())
+            }
             break
+            /*vdom.component.unmount()
+            enqueueJob(() => vdom.component.onUnmounted())
+            break*/
         }
 
         default: {

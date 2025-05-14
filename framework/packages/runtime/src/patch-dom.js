@@ -51,6 +51,7 @@ function findIndexInParent(parentEl, el) {
 
 function patchText(oldVdom, newVdom) {
 	const el = oldVdom.el;
+	if (!el) return; // fix
 	const {value: oldText} = oldVdom;
 	const {value: newText} = newVdom;
 

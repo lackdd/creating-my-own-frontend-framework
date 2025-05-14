@@ -120,7 +120,9 @@ export function defineComponent({ render, state, onMounted = emptyFn, onUnMounte
 
         unmount() {
             if (!this.#isMounted) {
-                throw new Error('Component is not mounted')
+                //throw new Error('Component is not mounted')
+                console.warn('Component is already unmounted or not mounted');
+                return; // fix
             }
 
             destroyDom(this.#vdom)
