@@ -1,5 +1,9 @@
 # dot-js Frontend Framework
-This framework was created based on a book named "Build a Frontend Web Framework (From Scratch)" by Angel Sola Orbaiceta 
+We got in a call together with Andre every single time and studied together as we went through the book, all effort was 50/50.
+
+This framework was created based on a book named "Build a Frontend Web Framework (From Scratch)" by Angel Sola Orbaiceta.
+
+The global state management, http client dotjs and callback props in routerOutlet were created by us.
 
 dot-js is a lightweight, reactive frontend framework built from scratch using vanilla JavaScript. It provides component-based architecture, reactive state management, virtual DOM implementation, and client-side routing capabilities.
 
